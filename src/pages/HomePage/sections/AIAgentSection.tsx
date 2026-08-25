@@ -104,7 +104,18 @@ export default function AIAgentSection() {
                       viewport={{ once: true }}
                       transition={{ duration: 0.6, delay: index * 0.1 }}
                       whileHover={{ y: -6, transition: { duration: 0.2 } }}
-                      onClick={() => setActiveDialog(feature.id)}
+                      onClick={() => {
+  if(feature.id === 'qa'){
+    //文化问答智能体
+    window.open("https://agentlab.sdu.edu.cn/product/llm/workspace/d9f3hm24dgs1m388gc2g/application/d9k3t5l4shh25omj81mg/arrange?tabKey=arrange&version=v1", "_blank")
+  }else if(feature.id === 'route'){
+    //路线规划智能体
+    window.open("https://agentlab.sdu.edu.cn/product/llm/workspace/d9f3hm24dgs1m388gc2g/application/d9grfgl4shh25omj5980/arrange?tabKey=arrange&version=v2", "_blank")
+  }else{
+    //语音讲解、历史复原，保持原弹窗逻辑
+    setActiveDialog(feature.id)
+  }
+}}
                       className="group cursor-pointer bg-white rounded-2xl p-6 shadow-sm hover:shadow-xl border border-border/50 transition-all duration-300"
                   >
                     <div className={`w-14 h-14 rounded-xl ${feature.bgColor} flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-300`}>
