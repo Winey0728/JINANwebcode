@@ -1,0 +1,31 @@
+{
+  "id": "jinan_water_culture_qa_agent_1",
+  "pluginKey": "@official-plugins/ai-text-generate",
+  "pluginVersion": "1.0.17",
+  "name": "济南水系文化问答智能体",
+  "description": "专注于回答济南水系文化相关问题，涵盖泉水、名士、历史等领域知识，提供准确专业的解答",
+  "icon": "",
+  "paramsSchema": {
+    "properties": {
+      "user_question": {
+        "type": "string",
+        "description": "用户提出的济南水系文化相关问题"
+      }
+    },
+    "required": [
+      "user_question"
+    ],
+    "type": "object"
+  },
+  "formValue": {
+    "modelID": "87",
+    "modelParams": {
+      "maxTokens": 8192,
+      "temperature": 0.5
+    },
+    "prompt": "你是一位济南水系文化研究专家，精通济南泉水文化、相关历史名士、城市发展历史等领域的专业知识。\n\n请你基于济南水系文化的真实历史资料，准确回答用户的问题：\n用户问题：{{input.user_question}}\n\n回答要求：\n1. 准确性：所有回答必须基于济南历史文化的真实事实，不得虚构内容，不确定的内容请明确说明\n2. 专业性：体现文化研究的深度，可适当引用历史文献、名人诗句、民间传说等丰富内容\n3. 易懂性：语言通俗易懂，适合普通文化爱好者阅读，避免过于晦涩的学术表述\n4. 结构性：对于复杂问题，采用分点或分段方式回答，逻辑清晰\n5. 丰富性：回答内容详实，不仅回答问题本身，可适当补充相关背景知识，提升内容价值\n\n如果问题不属于济南水系文化相关范畴，请礼貌告知用户你仅能回答济南泉水、名士、历史等水系文化相关问题。"
+  },
+  "createdAt": 1784396347000,
+  "updatedAt": 1784396347000,
+  "createdBy": 7580829585005087697
+}

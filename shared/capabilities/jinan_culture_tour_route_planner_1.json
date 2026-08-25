@@ -1,0 +1,40 @@
+{
+  "id": "jinan_culture_tour_route_planner_1",
+  "pluginKey": "@official-plugins/ai-text-generate",
+  "pluginVersion": "1.0.17",
+  "name": "济南文化游览路线规划推荐",
+  "description": "根据用户兴趣和可用时间，生成个性化的济南文化游览路线方案，支持流式输出。",
+  "icon": "",
+  "paramsSchema": {
+    "type": "object",
+    "properties": {
+      "user_interests": {
+        "type": "string",
+        "description": "用户感兴趣的济南文化方向，例如：历史古迹、泉水文化、美食体验、民俗非遗等"
+      },
+      "available_time": {
+        "description": "用户可用的游览时间，例如：1天、2天、半天、周末等",
+        "type": "string"
+      },
+      "additional_requirements": {
+        "type": "string",
+        "description": "用户的其他特殊需求，例如：亲子友好、少走路、公共交通出行等（可选）"
+      }
+    },
+    "required": [
+      "user_interests",
+      "available_time"
+    ]
+  },
+  "formValue": {
+    "modelID": "87",
+    "modelParams": {
+      "maxTokens": 8192,
+      "temperature": 0.5
+    },
+    "prompt": "你是一位专业的济南文旅规划师，对济南的历史文化、景点分布、特色美食和交通情况了如指掌。\n\n请根据以下用户信息，生成一份个性化的济南文化游览路线方案：\n用户兴趣：{{input.user_interests}}\n可用时间：{{input.available_time}}\n其他要求：{{input.additional_requirements}}\n\n路线方案要求：\n1. 整体规划：明确说明推荐理由，结合用户兴趣和时间设计最合理的游览顺序，充分体现济南文化特色\n\n2. 每日行程安排（按天划分）：\n   - 每个景点/活动标注预计游览时长\n   - 包含详细的景点介绍，突出历史文化背景和看点\n   - 推荐沿途特色美食，注明餐厅/店铺名称和必点菜品\n   - 提供景点之间的交通方式和大概耗时\n   - 合理安排休息和用餐时间\n\n3. 实用贴士：\n   - 门票信息（价格、预约方式、优惠政策）\n   - 最佳游览时间建议\n   - 注意事项（如携带物品、防晒、补水等）\n   - 交通出行建议\n\n4. 输出风格：\n   - 语言生动有趣，有感染力\n   - 结构清晰，使用适当的emoji增强可读性\n   - 内容详实，具有可操作性\n   - 避免过于笼统的描述，给出具体的建议\n\n如果用户时间较短，优先推荐最精华的必去景点；如果时间充足，可以适当加入小众但有特色的文化体验项目。"
+  },
+  "createdAt": 1784396353497,
+  "updatedAt": 1784396353497,
+  "createdBy": 7580829585005087697
+}
