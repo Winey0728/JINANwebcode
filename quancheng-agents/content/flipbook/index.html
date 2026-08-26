@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>泉城水脉 · 数字文化画册</title>
+<style>
+  /* ===== 基础重置 ===== */
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html, body {
+    font-family: "Songti SC", "STSong", "SimSun", serif;
+    background: #1a1f1c;
+    height: 100vh; width: 100vw;
+    overflow: hidden;
+    touch-action: manipulation;
+  }
+
+  /* ===== 画册舞台 ===== */
+  .book-stage {
+    position: relative;
+    width: 100vw; height: 100vh;
+    display: flex; justify-content: center; align-items: center;
+  }
+  .book {
+    position: relative;
+    width: min(1080px, 96vw);
+    height: min(720px, 88vh);
+  }
+  /* St.PageFlip 页面载体 */
+  .fb-page {
+    width: 100%; height: 100%;
+    background: #f5efe2;
+    overflow: hidden;
+    position: relative;
+  }
+  .stf__parent { border-radius: 10px; }
+  .stf__wrapper { border-radius: 10px; box-shadow: 0 24px 80px rgba(0,0,0,.55); }
+
+  /* ===== 封面页 ===== */
+  .cover-page {
+    height: 100%;
+    display: flex; flex-direction: column;
+    justify-content: center; align-items: center;
+    text-align: center;
+    background: linear-gradient(160deg, #1a2a22 0%, #2d3d32 40%, #1a2a22 100%);
+    color: #e8dcc8;
+    padding: 40px;
+    position: relative;
+  }
+  .cover-page .water-mark {
+    position: absolute; inset: 0;
+    opacity: .06;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext x='50' y='55' font-size='80' fill='%23fff' text-anchor='middle' opacity='.5'%3E泉%3C/text%3E%3C/svg%3E");
+    background-size: 180px;
+    pointer-events: none;
+  }
+  .cover-page h1 {
+    font-size: clamp(30px, 4.5vw, 56px);
+    letter-spacing: 14px;
+    margin-bottom: 12px;
+    text-shadow: 0 4px 20px rgba(0,0,0,.4);
+  }
+  .cover-page .sub {
+    font-size: clamp(12px, 1.6vw, 17px);
+    letter-spacing: 5px;
+    opacity: .75;
+    margin-bottom: 36px;
+  }
+  .cover-page .divider {
+    width: 80px; height: 2px;
+    background: #c4a96a;
+    margin: 0 auto 26px;
+    border-radius: 1px;
+  }
+  .cover-page .desc {
+    font-size: clamp(12px, 1.4vw, 15px);
+    line-height: 2.2;
+    max-width: 480px;
+    opacity: .7;
+    letter-spacing: 1px;
+  }
+  .cover-page .start-btn {
+    margin-top: 32px;
+    padding: 12px 36px;
+    border: 1px solid rgba(196,169,106,.5);
+    border-radius: 999px;
+    background: transparent;
+    color: #c4a96a;
+    font-family: inherit;
+    font-size: 15px;
+    letter-spacing: 4px;
+    cursor: pointer;
+    transition: all .25s ease;
+  }
+  .cover-page .start-btn:hover {
+    background: rgba(196,169,106,.12);
+    border-color: rgba(196,169,106,.8);
+  }
+
+  /* ===== 目录页 ===== */
+  .toc-page {
+    height: 100%;
+    padding: 30px 36px;
+    overflow-y: auto;
+  }
+  .toc-page h2 {
+    font-size: 22px; letter-spacing: 8px;
+    color: #3a3226; margin-bottom: 20px;
+    text-align: center;
+  }
+  .toc-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 8px 20px;
+  }
+  .toc-group { margin-bottom: 12px; }
+  .toc-group h3 {
+    font-size: 13px; color: #8a5a1e;
+    letter-spacing: 2px; margin-bottom: 6px;
+    border-bottom: 1px solid #ddd3c0;
+    padding-bottom: 3px;
+  }
+  .toc-item {
+    font-size: 13px; color: #4a4130;
+    padding: 3px 0; cursor: pointer;
+    transition: color .15s;
+    display: flex; align-items: baseline;
+    gap: 6px;
+  }
+  .toc-item:hover { color: #8a5a1e; }
+  .toc-item .num { font-size: 11px; color: #9a8d72; min-width: 22px; }
+
+  /* ===== 点位页（同构模板，版式对齐样品页：标题压在 hero 图左下角） ===== */
+  .spot-page { display: flex; flex-direction: column; height: 100%; position: relative; }
+  .spot-page .hero {
+    position: relative; flex-shrink: 0;
+  }
+  .spot-page .hero img {
+    width: 100%; display: block;
+    aspect-ratio: 16/9; object-fit: cover;
+    background: #2a2a2a;
+  }
+  .spot-page .hero::after {
+    content: "";
+    position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(0,0,0,.25) 0%, transparent 40%, rgba(245,239,226,1) 96%);
+  }
+  .spot-page .title {
+    position: absolute; left: 28px; bottom: 20px;
+    z-index: 2; color: #fff;
+    text-shadow: 0 2px 14px rgba(0,0,0,.5);
+  }
+  .spot-page .title h1 {
+    font-size: clamp(24px, 3.2vw, 38px);
+    letter-spacing: 7px;
+  }
+  .spot-page .title p {
+    font-size: 12px; letter-spacing: 2px;
+    opacity: .85; margin-top: 4px;
+  }
+  .spot-page .body {
+    position: relative; z-index: 2;
+    padding: 8px 28px 30px;
+    color: #3a3226; flex: 1;
+    overflow-y: auto;
+  }
+  .spot-page .lead {
+    font-size: 14px; line-height: 1.9;
+    text-align: justify;
+  }
+  .spot-page .lead em { font-style: normal; color: #8a5a1e; }
+  .spot-page .group-tag {
+    display: inline-block;
+    font-size: 11px; letter-spacing: 1px;
+    color: #8a7a58;
+    background: #e8ddc4;
+    padding: 2px 10px; border-radius: 999px;
+    margin-bottom: 8px;
+  }
+  .spot-page .pagenum {
+    position: absolute; right: 20px; bottom: 10px;
+    font-size: 11px; color: #9a8d72;
+    letter-spacing: 2px;
+    pointer-events: none;
+  }
+  .spot-page .placeholder-img {
+    width: 100%; aspect-ratio: 16/9;
+    background: linear-gradient(135deg, #3a3a3a 0%, #2a2a2a 100%);
+    display: flex; align-items: center; justify-content: center;
+    text-align: center;
+    color: #888; font-size: 14px; letter-spacing: 2px;
+    line-height: 2;
+  }
+
+  /* ===== 封底 ===== */
+  .back-page {
+    height: 100%;
+    display: flex; flex-direction: column;
+    justify-content: center; align-items: center;
+    text-align: center;
+    background: #1a2a22; color: #9a9a8a;
+    padding: 40px;
+  }
+  .back-page h2 {
+    font-size: 28px; letter-spacing: 10px;
+    color: #c4a96a; margin-bottom: 20px;
+  }
+  .back-page p { font-size: 14px; line-height: 2; opacity: .7; }
+  .back-page .qr-area {
+    margin-top: 30px; padding: 20px 30px;
+    border: 1px dashed rgba(196,169,106,.3);
+    border-radius: 10px;
+    font-size: 13px; color: #8a8a7a;
+  }
+
+  /* ===== 悬浮功能按钮（全局） ===== */
+  .fab-col {
+    position: fixed; right: 20px; bottom: 24px;
+    display: flex; flex-direction: column; gap: 12px;
+    z-index: 50;
+  }
+  .fab {
+    display: flex; align-items: center; gap: 8px;
+    border: none; cursor: pointer;
+    padding: 11px 18px; border-radius: 999px;
+    font-size: 14px; font-family: inherit;
+    letter-spacing: 1px;
+    box-shadow: 0 8px 24px rgba(0,0,0,.35);
+    transition: transform .15s ease, box-shadow .15s ease, opacity .2s;
+  }
+  .fab:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(0,0,0,.45); }
+  .fab-audio { background: #1f6f5c; color: #fff; }
+  .fab-history { background: #8a5a1e; color: #fff; }
+  .fab-chat { background: #2c3e57; color: #fff; }
+  .fab.pending { opacity: .5; cursor: not-allowed; }
+  .fab.pending:hover { transform: none; }
+  .fab .dot { width: 8px; height: 8px; border-radius: 50%; background: #ffd97a; }
+
+  /* ===== 弹层（全局复用） ===== */
+  .overlay {
+    position: fixed; inset: 0;
+    background: rgba(15,20,18,.72);
+    backdrop-filter: blur(4px);
+    display: none; justify-content: center; align-items: center;
+    z-index: 100; padding: 20px;
+  }
+  .overlay.show { display: flex; }
+  .panel {
+    background: #faf6ec; border-radius: 14px;
+    max-width: 860px; width: 100%;
+    max-height: 88vh; overflow: auto;
+    padding: 24px 28px; position: relative;
+    box-shadow: 0 20px 60px rgba(0,0,0,.5);
+  }
+  .panel h2 { font-size: 22px; letter-spacing: 4px; color: #3a3226; margin-bottom: 4px; }
+  .panel .sub { font-size: 12px; color: #8a7a58; margin-bottom: 14px; letter-spacing: 1px; }
+  .panel .close { position: absolute; top: 12px; right: 14px; border: none; background: none; font-size: 24px; cursor: pointer; color: #8a7a58; line-height: 1; }
+  .audio-row { display: flex; flex-direction: column; gap: 14px; }
+  .audio-item { background: #f0e8d6; border-radius: 10px; padding: 12px 16px; }
+  .audio-item h3 { font-size: 15px; margin-bottom: 6px; color: #5c4a28; letter-spacing: 1px; }
+  .audio-item audio { width: 100%; }
+  .audio-item .note { font-size: 11px; color: #93835f; margin-top: 4px; }
+  .audio-item .script {
+    font-size: 13px; color: #5c4a28; line-height: 1.8;
+    padding: 8px; background: #e8ddc4; border-radius: 6px;
+    margin-top: 2px;
+  }
+  .audio-item.planned { opacity: .65; background: #efe9db; }
+  .audio-item .badge-planned {
+    display: inline-block; font-size: 11px; color: #8a7a58;
+    border: 1px dashed #b6a880; border-radius: 999px;
+    padding: 2px 10px; margin-top: 4px; letter-spacing: 1px;
+  }
+  .style-tabs { display: flex; gap: 6px; margin: 4px 0 8px; }
+  .style-tab {
+    font-size: 11px; font-family: inherit; letter-spacing: 1px;
+    border: 1px solid #c9b98f; border-radius: 999px;
+    background: transparent; color: #7a6435;
+    padding: 2px 10px; cursor: pointer;
+  }
+  .style-tab.active { background: #8a5a1e; border-color: #8a5a1e; color: #fff; }
+  .style-tab:disabled { opacity: .45; cursor: not-allowed; border-style: dashed; }
+  .panel img.restore { width: 100%; border-radius: 10px; display: block; }
+  .panel video.restore-video { width: 100%; border-radius: 10px; display: block; margin-top: 12px; background: #000; }
+  .panel .video-placeholder {
+    margin-top: 12px; border: 1px dashed #b6a880; border-radius: 10px;
+    padding: 18px; text-align: center;
+    font-size: 13px; color: #8a7a58; letter-spacing: 2px;
+    background: #f0e8d6;
+  }
+  .panel .cap { font-size: 12px; color: #7a6c4c; margin-top: 8px; line-height: 1.8; }
+  .chatbox { text-align: center; padding: 22px 8px; }
+  .chatbox .status { display: inline-block; font-size: 12px; background: #e8ddc4; color: #7a6435; border-radius: 999px; padding: 5px 14px; margin-bottom: 6px; }
+  .chatbox .status.online { background: #d8e8dd; color: #1f6f5c; }
+  .chatbox p { font-size: 14px; line-height: 2; color: #4a4130; margin-top: 8px; }
+  .chatbox a { display: inline-block; margin-top: 14px; padding: 10px 22px; border-radius: 999px; text-decoration: none; font-size: 14px; letter-spacing: 1px; }
+  .chatbox a.go1 { background: #2c3e57; color: #fff; margin-right: 8px; }
+  .chatbox a.go2 { background: #1f6f5c; color: #fff; }
+
+  /* ===== 翻页控制 ===== */
+  .nav-btn {
+    position: fixed; top: 50%; transform: translateY(-50%);
+    width: 44px; height: 80px;
+    background: rgba(255,255,255,.08);
+    border: none; color: rgba(255,255,255,.45);
+    font-size: 22px; cursor: pointer;
+    z-index: 40; border-radius: 6px;
+    transition: background .2s, color .2s;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .nav-btn:hover { background: rgba(255,255,255,.18); color: rgba(255,255,255,.8); }
+  .nav-prev { left: 10px; }
+  .nav-next { right: 10px; }
+  .page-indicator {
+    position: fixed; bottom: 10px; left: 50%; transform: translateX(-50%);
+    font-size: 12px; color: rgba(255,255,255,.35);
+    letter-spacing: 2px; z-index: 40;
+  }
+
+  /* ===== 响应式 ===== */
+  @media (max-width: 640px) {
+    .book { width: 96vw; height: 88vh; }
+    .spot-page .title { left: 18px; bottom: 14px; }
+    .spot-page .body { padding: 8px 20px 24px; }
+    .toc-page { padding: 20px 24px; }
+    .nav-btn { width: 32px; height: 56px; font-size: 16px; }
+    .fab-col { right: 12px; bottom: 16px; gap: 8px; }
+    .fab { padding: 9px 14px; font-size: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- 画册舞台 -->
+<div class="book-stage" id="bookStage">
+  <div class="book" id="book">
+    <!-- 页面由 JS 动态渲染，St.PageFlip 接管 -->
+  </div>
+</div>
+
+<!-- 翻页按钮 -->
+<button class="nav-btn nav-prev" id="btnPrev" title="上一页">‹</button>
+<button class="nav-btn nav-next" id="btnNext" title="下一页">›</button>
+<div class="page-indicator" id="pageIndicator"></div>
+
+<!-- 悬浮按钮 -->
+<div class="fab-col" id="fabCol">
+  <button class="fab fab-chat" id="fabChat" onclick="openPanel('chat')" title="智能对话">
+    <span class="dot"></span> 智能对话
+  </button>
+  <button class="fab fab-history" id="fabHistory" onclick="openPanel('history')">
+    <span class="dot"></span> 历史复原
+  </button>
+  <button class="fab fab-audio" id="fabAudio" onclick="openPanel('audio')">
+    <span class="dot"></span> 语音讲解
+  </button>
+</div>
+
+<!-- 语音讲解弹层 -->
+<div class="overlay" id="panel-audio">
+  <div class="panel">
+    <button class="close" onclick="closePanels()">×</button>
+    <h2>语音讲解</h2>
+    <div class="sub" id="audioSub">智能体② · 多语种语音讲解</div>
+    <div class="audio-row" id="audioContent">
+      <!-- 动态填充：普通话 / 济南方言 / 英语 × 儿童 / 故事 / 专业 -->
+    </div>
+  </div>
+</div>
+
+<!-- 历史复原弹层 -->
+<div class="overlay" id="panel-history">
+  <div class="panel">
+    <button class="close" onclick="closePanels()">×</button>
+    <h2>历史场景复原</h2>
+    <div class="sub" id="historySub">智能体④ · AI 历史场景复原</div>
+    <img class="restore" id="historyImg" src="" alt="历史复原图">
+    <div id="historyVideoSlot"><!-- 视频槽位：有 videoPath 时插入 <video>，否则占位 --></div>
+    <p class="cap" id="historyCap"></p>
+  </div>
+</div>
+
+<!-- 智能对话弹层 -->
+<div class="overlay" id="panel-chat">
+  <div class="panel">
+    <button class="close" onclick="closePanels()">×</button>
+    <h2>智能对话</h2>
+    <div class="sub">智能体①泉城文化问答 / ③路线规划</div>
+    <div class="chatbox">
+      <div class="status online">✅ ③ 路线规划 · 已上线</div><br>
+      <div class="status">⏳ ① 「小泉」文化问答 · 平台发布审批中</div>
+      <p>
+        ① 「小泉」文化问答：讲泉讲湖讲古城，有问必答（审批通过后开放直达）；<br>
+        ③ 路线规划：按时间/兴趣/体力定制游览路线，现已上线，点击即可体验。
+      </p>
+      <a class="go1" href="https://agentlab.sdu.edu.cn/product/llm/chat/d9gslat4shh25omj5dng" target="_blank" rel="noopener">问「小泉」（审批中）</a>
+      <a class="go2" href="https://agentlab.sdu.edu.cn/product/llm/chat/d9lujp54shh6e64s5g1g" target="_blank" rel="noopener">规划路线</a>
+    </div>
+  </div>
+</div>
+
+<script src="vendor/page-flip.browser.js"></script>
+<script src="data.js"></script>
+<script>
+
+// ===================== 渲染函数 =====================
+const book = document.getElementById('book');
+let currentPage = 0;   // FAB/弹层上下文页
+let rawPage = 0;       // PageFlip 报告的原始页码（双页模式下归一化为左页）
+let navForward = true; // 最近一次翻页方向
+let navTarget = null;  // goTo 显式目标页（目录/封面跳转时精确绑定上下文）
+let pageFlip = null;
+
+function renderPages() {
+  book.innerHTML = '';
+  PAGES.forEach((page, i) => {
+    const wrapper = document.createElement('div');
+    wrapper.className = 'fb-page';
+    wrapper.dataset.index = i;
+
+    if (page.type === 'cover') {
+      wrapper.innerHTML = `
+        <div class="cover-page">
+          <div class="water-mark"></div>
+          <h1>泉城水脉</h1>
+          <p class="sub">JINAN SPRING CULTURE FLIPBOOK</p>
+          <div class="divider"></div>
+          <p class="desc">
+            济南，因泉而名，因水而城。<br>
+            七十二名泉汇流成河，千年古城因水而生。<br>
+            翻开这本数字画册，聆听泉水故事，穿越历史长河。
+          </p>
+          <button class="start-btn" onclick="goTo(2)">开始浏览 →</button>
+        </div>
+      `;
+    } else if (page.type === 'toc') {
+      const groups = {};
+      PAGES.forEach((p, idx) => {
+        if (p.group) {
+          if (!groups[p.group]) groups[p.group] = [];
+          groups[p.group].push({ name: p.name, idx });
+        }
+      });
+      let tocHtml = '';
+      for (const [gName, items] of Object.entries(groups)) {
+        tocHtml += `<div class="toc-group"><h3>${gName}</h3>`;
+        items.forEach(item => {
+          tocHtml += `<div class="toc-item" onclick="goTo(${item.idx})"><span class="num">${String(item.idx - 1).padStart(2,'0')}</span>${item.name}</div>`;
+        });
+        tocHtml += '</div>';
+      }
+      wrapper.innerHTML = `
+        <div class="toc-page">
+          <h2>目 录</h2>
+          <div class="toc-grid">${tocHtml}</div>
+        </div>
+      `;
+    } else if (page.type === 'back') {
+      wrapper.innerHTML = `
+        <div class="back-page">
+          <h2>泉城水脉</h2>
+          <p>
+            山东大学「泉城水脉文化智能体」项目<br>
+            数字文化画册 · 2026
+          </p>
+          <div class="qr-area">
+            路线规划智能体已上线<br>
+            点击右下角"智能对话"按钮体验
+          </div>
+          <p style="margin-top:24px; font-size:12px; opacity:.4;">
+            本项目采用 AI 技术进行历史场景复原与语音讲解制作<br>
+            复原图存疑处均已标注，不编造史实
+          </p>
+        </div>
+      `;
+    } else {
+      // 点位页（版式对齐样品：标题压在 hero 图左下角，hero 带渐变压暗）
+      const pageNum = i - 1; // 封面=0，目录=1，点位从2开始
+      const imgHtml = page.hasHistoryImg
+        ? `<img src="${page.historyImgPath}" alt="${page.name}复原图" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="placeholder-img" style="display:none">${page.name}<br>历史复原图 · 待生成</div>`
+        : `<div class="placeholder-img">${page.name}<br>历史复原图 · 待生成</div>`;
+      wrapper.innerHTML = `
+        <div class="spot-page">
+          <div class="hero">
+            ${imgHtml}
+            <div class="title">
+              <h1>${page.name}</h1>
+              <p>${page.subtitle}</p>
+            </div>
+          </div>
+          <div class="body">
+            <span class="group-tag">${page.group}</span>
+            <p class="lead">${page.lead}</p>
+          </div>
+          <div class="pagenum">第 ${String(pageNum).padStart(2,'0')} 页 · 泉城水脉</div>
+        </div>
+      `;
+    }
+    book.appendChild(wrapper);
+  });
+}
+
+// ===================== 翻页引擎（St.PageFlip） =====================
+function initFlip() {
+  pageFlip = new St.PageFlip(book, {
+    width: 540,            // 单页宽度（双页对开时整书 1080）
+    height: 720,           // 单页高度
+    size: 'stretch',       // 随容器伸缩
+    minWidth: 280,
+    maxWidth: 540,
+    minHeight: 380,
+    maxHeight: 760,
+    usePortrait: true,     // 窄屏自动切单页模式
+    autoSize: true,
+    showCover: true,       // 封面/封底单独展示
+    drawShadow: true,
+    maxShadowOpacity: 0.4,
+    flippingTime: 700,
+    useMouseEvents: true,  // 页角/页边拖拽翻页
+    swipeDistance: 30,
+    mobileScrollSupport: false
+  });
+  pageFlip.loadFromHTML(book.querySelectorAll('.fb-page'));
+
+  pageFlip.on('flip', e => {
+    navForward = e.data >= rawPage;
+    rawPage = e.data;
+    syncContext();
+  });
+  pageFlip.on('changeOrientation', () => {
+    syncContext();
+  });
+}
+
+// 双页对开 + showCover 下，PageFlip 报告的页码归一化为摊开面的左页
+// （封面/封底单独占面）。这里换算出当前摊开的书页范围。
+function spreadOf(raw) {
+  const total = PAGES.length;
+  if (!pageFlip || pageFlip.getOrientation() === 'portrait') return [raw];
+  if (raw <= 0) return [0];
+  if (raw >= total - 1) return [total - 1];
+  let left = raw % 2 === 1 ? raw : raw - 1;
+  if (left < 1) left = 1;
+  const right = Math.min(left + 1, total - 1);
+  return left === right ? [left] : [left, right];
+}
+
+// FAB/弹层上下文页：目录/封面直达时精确绑定目标页；
+// 翻页（拖拽/按钮/键盘）时，前翻取摊开面右页、回翻取左页；
+// 若选中的一侧不是点位页而对侧是，则取对侧。
+function syncContext() {
+  const sp = spreadOf(rawPage);
+  let ctx;
+  if (navTarget != null && sp.includes(navTarget)) {
+    ctx = navTarget;
+  } else if (sp.length === 1) {
+    ctx = sp[0];
+  } else {
+    ctx = navForward ? sp[sp.length - 1] : sp[0];
+    const other = ctx === sp[0] ? sp[sp.length - 1] : sp[0];
+    if (PAGES[ctx].type && !PAGES[other].type) ctx = other;
+  }
+  currentPage = ctx;
+  navTarget = null;
+  updateIndicator();
+  updateFABs();
+}
+
+function goTo(n) {
+  if (n < 0 || n >= PAGES.length) return;
+  closePanels();
+  navTarget = n;
+  if (pageFlip) {
+    pageFlip.turnToPage(n);
+  } else {
+    rawPage = n;
+    syncContext();
+  }
+}
+
+function nextPage() { if (pageFlip) pageFlip.flipNext(); }
+function prevPage() { if (pageFlip) pageFlip.flipPrev(); }
+
+function updateIndicator() {
+  const total = PAGES.length;
+  const sp = spreadOf(rawPage);
+  const label = sp.length === 1
+    ? `${sp[0] + 1} / ${total}`
+    : `${sp[0] + 1}–${sp[1] + 1} / ${total}`;
+  document.getElementById('pageIndicator').textContent = label;
+}
+
+// ===================== 悬浮按钮状态 =====================
+function updateFABs() {
+  const page = PAGES[currentPage];
+  const fabAudio = document.getElementById('fabAudio');
+  const fabHistory = document.getElementById('fabHistory');
+  const fabChat = document.getElementById('fabChat');
+
+  if (!page || page.type) {
+    // 封面/目录/封底
+    fabAudio.style.display = 'none';
+    fabHistory.style.display = 'none';
+    fabChat.style.display = 'none';
+    return;
+  }
+
+  fabAudio.style.display = 'flex';
+  fabHistory.style.display = 'flex';
+  fabChat.style.display = 'flex';
+
+  // 语音讲解：有 mp3 直接听；无 mp3 也有文案可看，不再整体置灰
+  if (page.hasAudio) {
+    fabAudio.classList.remove('pending');
+    fabAudio.title = '收听语音讲解';
+  } else {
+    fabAudio.classList.remove('pending');
+    fabAudio.title = '语音讲解 · 文案预览（音频制作中）';
+  }
+
+  if (page.hasHistoryImg) {
+    fabHistory.classList.remove('pending');
+    fabHistory.title = '查看历史复原';
+  } else {
+    fabHistory.classList.add('pending');
+    fabHistory.title = '历史复原 · 待生成';
+  }
+
+  // 智能对话：③路线规划已上线，不再整体置灰
+  fabChat.classList.remove('pending');
+  fabChat.title = '智能对话（路线规划已上线）';
+}
+
+// ===================== 语音弹层：语种 × 风格 结构 =====================
+// 数据现状：所有点位仅有「普通话·故事版」「济南方言·故事版」文案；
+// 仅趵突泉有对应 mp3。其余语种/风格槽位一律显示"规划中"，不编造内容。
+const AUDIO_LANGS = [
+  { key: 'mandarin', label: '普通话',   textField: 'audioMandarin', pathField: 'audioMandarinPath', note: '以生动故事切入，约 1 分钟。' },
+  { key: 'dialect',  label: '济南方言', textField: 'audioDialect',  pathField: 'audioDialectPath',  note: '地道济南方言文案，TTS 朗读。' },
+  { key: 'english',  label: '英语',     textField: null,            pathField: null,                note: '' }
+];
+const AUDIO_STYLES = ['儿童版', '故事版', '专业版'];
+
+function buildAudioPanel(page) {
+  document.getElementById('audioSub').textContent = `智能体② · ${page.name} 多语种语音讲解`;
+  let html = '';
+
+  AUDIO_LANGS.forEach(lang => {
+    const text = lang.textField ? page[lang.textField] : null;
+    const mp3  = lang.pathField ? page[lang.pathField] : null;
+
+    if (!text && !mp3) {
+      // 该语种完全无内容（当前：英语）
+      html += `<div class="audio-item planned">
+        <h3>🎙 ${lang.label}</h3>
+        <div class="style-tabs">${AUDIO_STYLES.map(s => `<button class="style-tab" disabled>${s}</button>`).join('')}</div>
+        <span class="badge-planned">规划中</span>
+      </div>`;
+      return;
+    }
+
+    // 有内容的语种：风格切换结构（当前仅"故事版"有内容）
+    const tabs = AUDIO_STYLES.map(s => {
+      const avail = (s === '故事版');
+      return `<button class="style-tab ${avail ? 'active' : ''}" ${avail ? '' : 'disabled title="规划中"'}>${s}${avail ? '' : ' · 规划中'}</button>`;
+    }).join('');
+
+    let body;
+    if (mp3) {
+      body = `<audio controls src="${mp3}"></audio><div class="note">${lang.note}</div>`;
+    } else {
+      body = `<div class="script">${text}</div><div class="note">文案预览 · 音频制作中</div>`;
+    }
+
+    html += `<div class="audio-item">
+      <h3>🎙 ${lang.label}</h3>
+      <div class="style-tabs">${tabs}</div>
+      ${body}
+    </div>`;
+  });
+
+  document.getElementById('audioContent').innerHTML = html;
+}
+
+// ===================== 弹层控制 =====================
+function openPanel(name) {
+  const page = PAGES[currentPage];
+  if (!page || page.type) return;
+
+  if (name === 'audio') {
+    buildAudioPanel(page);
+  } else if (name === 'history') {
+    if (!page.hasHistoryImg && !page.historyCaption && !page.videoPath) return;
+    document.getElementById('historySub').textContent = `智能体④ · ${page.name} 历史场景复原`;
+    const img = document.getElementById('historyImg');
+    if (page.hasHistoryImg && page.historyImgPath) {
+      img.src = page.historyImgPath;
+      img.style.display = 'block';
+    } else {
+      img.removeAttribute('src');
+      img.style.display = 'none';
+    }
+    // 视频槽位：数据中有 videoPath 才显示播放器，否则占位
+    const slot = document.getElementById('historyVideoSlot');
+    if (page.videoPath) {
+      slot.innerHTML = `<video class="restore-video" controls src="${page.videoPath}"></video>`;
+    } else {
+      slot.innerHTML = `<div class="video-placeholder">🎬 动效视频 · 二期上线</div>`;
+    }
+    document.getElementById('historyCap').textContent = page.historyCaption || '历史复原图待生成';
+  }
+
+  document.querySelectorAll('.overlay').forEach(o => o.classList.remove('show'));
+  document.getElementById('panel-' + name).classList.add('show');
+}
+
+function closePanels() {
+  document.querySelectorAll('.overlay').forEach(o => o.classList.remove('show'));
+  document.querySelectorAll('audio, video').forEach(a => { a.pause(); a.currentTime = 0; });
+}
+
+// ===================== 事件绑定 =====================
+document.getElementById('btnPrev').addEventListener('click', prevPage);
+document.getElementById('btnNext').addEventListener('click', nextPage);
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === ' ') nextPage();
+  if (e.key === 'ArrowLeft') prevPage();
+  if (e.key === 'Escape') closePanels();
+});
+
+document.querySelectorAll('.overlay').forEach(o => {
+  o.addEventListener('click', e => { if (e.target === o) closePanels(); });
+});
+
+// ===================== 初始化 =====================
+renderPages();
+initFlip();
+updateIndicator();
+updateFABs();
+</script>
+
+</body>
+</html>

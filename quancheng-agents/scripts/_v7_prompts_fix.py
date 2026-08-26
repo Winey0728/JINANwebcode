@@ -1,0 +1,34 @@
+# -*- coding: utf-8 -*-
+import re
+from pathlib import Path
+
+prompts = {
+5: "Photorealistic scene, Song-Yuan dynasty China c.1200, warm late-afternoon light. A busy dock on the Xiaoqing River, Jinan: a wooden-and-stone pier on calm clear water, three flat-bottomed wooden cargo boats with furled sails moored alongside. Porters in short jackets and headscarves carry baskets and hemp sacks on shoulder poles; robed merchants negotiate. Wooden shops and a riverside teahouse with blank signboards line the willow bank. No modern boats, no modern elements, no text.",
+9: "Photorealistic scene, Northern Song Jinan c.1095, soft afternoon light. A scholar's study: a thirteen-year-old girl in a pale-green narrow-sleeved beizi jacket and long skirt, hair in simple double loops, sits at a low wooden desk holding a writing brush over an unrolled scroll, inkstone beside her. Behind, shelves of rolled scrolls, a guqin on a stand, an incense burner. Through the papered lattice window, willows, bamboo and a distant bubbling spring. No modern objects, no glass windows, no text.",
+10: "Photorealistic scene, Song dynasty Jinan c.1100, dappled late-afternoon light. A small stone spring pool barely two meters across, exceptionally clear water over a sandy bottom, fine bubbles rising like scattered jade. A twelve-year-old girl in a pale-green narrow-sleeved jacket and flowing skirt kneels on a slab, rinsing a writing brush in the water, an inkstone and scroll beside her. Bamboo and plantain leaves filter golden light, a grey-tiled roof corner behind. No modern elements, no glass, no text.",
+12: "Photorealistic hand-tinted photograph, Qing dynasty Jinan c.1720, bright daylight. A rectangular spring pool of blue-grey stone in a governor's yamen rear garden, crystal-clear jade-green water, fine bubble strings rising from the sandy floor like rolling pearls, never boiling. A northern-Chinese pavilion with upturned eaves and red columns by the pool, Taihu rockery, willows and bamboo. A Qing official with queue hairstyle watches from the pavilion. No modern elements, no glass, no text.",
+13: "Photorealistic hand-tinted photograph, late-Qing Jinan c.1890, golden-hour light. A spring-water teahouse terrace beside an irregular natural pond: low bamboo chairs and wooden tables with a purple-clay teapot. Willows trail slender branches into the clear rippling water, flat stone slab bridges over narrow inflowing streams. Whitewashed courtyard houses with grey tiles line the winding shore, some with stone steps to the water. A robed scholar reads, a woman washes clothes. No modern elements, no text.",
+14: "Photorealistic vintage photograph, 1920s Jinan commercial port, raking afternoon light. Wei'er Road financial street: a continuous wall of two- and three-story European classical banks, a grand German Neoclassical bank with granite steps, four-column Ionic portico and carved pediment, flanked by British red-brick buildings and a few hybrids. Cast-iron gates, stone lions. Clerks in Western suits, compradors in long gowns, waiting rickshaws, one early black automobile. No modern cars, no neon, no text.",
+15: "Photorealistic vintage photograph, 1920s Jinan commercial port, warm late-afternoon light. Jing'er Road commercial axis: a continuous street wall of one- to three-story Chinese-Western hybrids, Western arched porches, pediments and cast-iron balconies mixed with grey-brick Chinese shops with lattice windows and tile roofs. Cloth banners and blank signboards above open shopfronts. Cobblestone street, pedestrians in long gowns and qipao, rickshaws, an early automobile. No modern cars, no asphalt, no text.",
+16: "Photorealistic vintage photograph, 1904 Jinan, morning side-light. The Jiaoji Railway station: a symmetrical two-story German Neoclassical building in red brick and stone, central columned porch with granite steps, tall arched windows, red-tiled hipped roof, a lower eastern annex with dormers. At the low open platform, a 1900s German steam locomotive breathing steam with riveted wooden carriages. German engineers in suits, Chinese laborers in short jackets. No tall clock tower, no overhead wires, no text.",
+17: "Photorealistic vintage photograph, c.1905 Jinan, slanting morning light. A narrow lane of worn bluestone slabs glistening with dew, tight rows of grey-tiled shop-houses with open wooden shopfronts, blank signboards and cloth banners. Left, a vendor fries spiral pastries on a sizzling iron griddle beside stacked bamboo steamers. Right, a half-open courtyard gate reveals a small square spring pool with pink hibiscus. The red wall of the Confucian temple closes the vista. No cars, no modern elements, no text.",
+18: "Photorealistic hand-tinted photograph, late-Qing Jinan c.1890. Across a clear moat, the southeastern corner of the Ming-era city wall: weathered blue-grey brick, ten meters high, crenellated parapets. Willows trail into the calm water. Right, the Black Tiger Spring: a stone pool with ONE single rustic stone beast-head spout gushing a powerful clear stream; only one spout existed before 1931. A woman washes clothes on the bank, hazy Mount Qianfo beyond. No pavilion on the wall, no modern buildings, no text.",
+19: "Photorealistic scene, Southern Song China c.1180, oil-lamp warmth against cold moonlight. Night in a scholar-warrior's timber study. A robust man in his late thirties, reddish cheeks and short beard, in a dark indigo robe and askew square cap, adjusts the lamp wick with his left hand while his right grips a sheathed sword. On the desk: an ink-written scroll, inkstone, celadon wine pot and cup. A second sword and a bow on a wall rack. No glass windows, no blue-and-white porcelain, no text.",
+20: "Photorealistic hand-tinted photograph, Qing dynasty Jinan c.1800, soft morning light and lake mist. A modest memorial temple by Daming Lake: a single-eaved hard-gable gatehouse with grey tiles and a blank plaque, stone steps, two stone lions. Inside, a stone-paved courtyard with tall pines and bamboo; at the far end a three-bay main hall with grey hip-and-gable roof, an offering table with bronze incense burner. A stele on a tortoise base under the pines. No modern buildings, no glass, no text.",
+}
+
+path = Path(r"W:\Agente_Inteligente\quancheng-agents\prompts-v7-批量生图对照表.md")
+src = path.read_text(encoding="utf-8")
+blocks = list(re.finditer(r"```\n(Photorealistic.*?)\n```", src, re.S))
+assert len(blocks) == 20, len(blocks)
+out, last, bad = [], 0, 0
+for i, m in enumerate(blocks, 1):
+    p = prompts.get(i) or m.group(1)
+    if len(p) > 512: bad += 1
+    print(("OK " if len(p) <= 512 else "OVER"), i, len(p))
+    out.append(src[last:m.start()])
+    out.append("```\n" + p + "\n```")
+    last = m.end()
+out.append(src[last:])
+path.write_text("".join(out), encoding="utf-8")
+print("written, over:", bad)

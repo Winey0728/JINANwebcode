@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>趵突泉 · 泉城水脉文化画册（样品页）</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:"Songti SC","STSong","SimSun",serif; background:#1a1f1c; display:flex; justify-content:center; align-items:center; min-height:100vh; padding:24px; }
+  .page { position:relative; width:min(1080px,96vw); border-radius:14px; overflow:hidden; box-shadow:0 24px 80px rgba(0,0,0,.55); background:#f5efe2; }
+  .hero { position:relative; }
+  .hero img { width:100%; display:block; aspect-ratio:16/9; object-fit:cover; }
+  .hero::after { content:""; position:absolute; inset:0; background:linear-gradient(180deg,rgba(0,0,0,.25) 0%,transparent 40%,rgba(245,239,226,1) 96%); }
+  .title { position:absolute; left:36px; bottom:26px; z-index:2; color:#fff; text-shadow:0 2px 14px rgba(0,0,0,.5); }
+  .title h1 { font-size:44px; letter-spacing:10px; }
+  .title p { font-size:15px; letter-spacing:3px; opacity:.9; margin-top:6px; }
+  .body { position:relative; z-index:2; padding:10px 40px 34px; color:#3a3226; }
+  .body .lead { font-size:16.5px; line-height:2; text-align:justify; }
+  .body .lead em { font-style:normal; color:#8a5a1e; }
+  .pagenum { position:absolute; right:26px; bottom:14px; font-size:12px; color:#9a8d72; letter-spacing:2px; }
+
+  /* 悬浮功能按钮 */
+  .fab-col { position:fixed; right:26px; bottom:30px; display:flex; flex-direction:column; gap:14px; z-index:50; }
+  .fab { display:flex; align-items:center; gap:10px; border:none; cursor:pointer; padding:13px 20px; border-radius:999px; font-size:15px; font-family:inherit; letter-spacing:1px; box-shadow:0 8px 24px rgba(0,0,0,.35); transition:transform .15s ease, box-shadow .15s ease; }
+  .fab:hover { transform:translateY(-2px); box-shadow:0 12px 30px rgba(0,0,0,.45); }
+  .fab-audio { background:#1f6f5c; color:#fff; }
+  .fab-history { background:#8a5a1e; color:#fff; }
+  .fab-chat { background:#2c3e57; color:#fff; }
+  .fab.pending { opacity:.55; cursor:not-allowed; }
+  .fab .dot { width:9px; height:9px; border-radius:50%; background:#ffd97a; }
+
+  /* 弹层 */
+  .overlay { position:fixed; inset:0; background:rgba(15,20,18,.72); backdrop-filter:blur(4px); display:none; justify-content:center; align-items:center; z-index:100; padding:20px; }
+  .overlay.show { display:flex; }
+  .panel { background:#faf6ec; border-radius:14px; max-width:860px; width:100%; max-height:88vh; overflow:auto; padding:26px 30px; position:relative; box-shadow:0 20px 60px rgba(0,0,0,.5); }
+  .panel h2 { font-size:24px; letter-spacing:4px; color:#3a3226; margin-bottom:4px; }
+  .panel .sub { font-size:13px; color:#8a7a58; margin-bottom:16px; letter-spacing:1px; }
+  .panel .close { position:absolute; top:14px; right:16px; border:none; background:none; font-size:26px; cursor:pointer; color:#8a7a58; line-height:1; }
+  .audio-row { display:flex; flex-direction:column; gap:16px; }
+  .audio-item { background:#f0e8d6; border-radius:10px; padding:14px 18px; }
+  .audio-item h3 { font-size:16px; margin-bottom:8px; color:#5c4a28; letter-spacing:1px; }
+  .audio-item audio { width:100%; }
+  .audio-item .note { font-size:12px; color:#93835f; margin-top:6px; }
+  .panel img.restore { width:100%; border-radius:10px; display:block; }
+  .panel .cap { font-size:13px; color:#7a6c4c; margin-top:10px; line-height:1.8; }
+  .chatbox { text-align:center; padding:26px 10px; }
+  .chatbox .status { display:inline-block; font-size:13px; background:#e8ddc4; color:#7a6435; border-radius:999px; padding:6px 16px; margin-bottom:14px; }
+  .chatbox p { font-size:15px; line-height:2; color:#4a4130; }
+  .chatbox a { display:inline-block; margin-top:14px; padding:12px 26px; border-radius:999px; text-decoration:none; font-size:15px; letter-spacing:1px; }
+  .chatbox a.go1 { background:#2c3e57; color:#fff; margin-right:10px; }
+  .chatbox a.go2 { background:#1f6f5c; color:#fff; }
+</style>
+</head>
+<body>
+
+<div class="page">
+  <div class="hero">
+    <img src="media/baotu-history.png" alt="清末趵突泉复原图">
+    <div class="title">
+      <h1>趵突泉</h1>
+      <p>天下第一泉 · BAOTU SPRING</p>
+    </div>
+  </div>
+  <div class="body">
+    <p class="lead">
+      趵突泉，济南三大名胜之首，清乾隆御封<em>「天下第一泉」</em>。三股泉水自池底喷涌而出，
+      声如隐雷，势若鼎沸，恒温十八度，四季不歇。池畔观澜亭、泺源堂掩映于垂柳之间，
+      李清照少年时曾居于此，写下「常记溪亭日暮，沉醉不知归路」的千古名句。
+      点右下角按钮，可收听<em>多语种语音讲解</em>、观看<em>清末历史场景复原</em>，或与智能体对话，深入了解泉城水脉。
+    </p>
+  </div>
+  <div class="pagenum">第 07 页 · 泉城水脉</div>
+</div>
+
+<!-- 悬浮按钮列（模拟画册页面右下角功能按钮） -->
+<div class="fab-col">
+  <button class="fab fab-chat pending" onclick="openPanel('chat')" title="审批通过后生效">
+    <span class="dot"></span> 智能对话
+  </button>
+  <button class="fab fab-history" onclick="openPanel('history')">
+    <span class="dot"></span> 历史复原
+  </button>
+  <button class="fab fab-audio" onclick="openPanel('audio')">
+    <span class="dot"></span> 语音讲解
+  </button>
+</div>
+
+<!-- 语音讲解弹层（智能体②） -->
+<div class="overlay" id="panel-audio">
+  <div class="panel">
+    <button class="close" onclick="closePanels()">×</button>
+    <h2>语音讲解</h2>
+    <div class="sub">智能体② · 多语种语音讲解（样品：普通话故事版 / 济南方言版）</div>
+    <div class="audio-row">
+      <div class="audio-item">
+        <h3>🎙 普通话 · 故事版</h3>
+        <audio controls src="media/audio-mandarin.mp3"></audio>
+        <div class="note">以乾隆御封「天下第一泉」的故事切入，约 1 分钟。</div>
+      </div>
+      <div class="audio-item">
+        <h3>🎙 济南方言 · 故事版</h3>
+        <audio controls src="media/audio-dialect.mp3"></audio>
+        <div class="note">济南方言词汇句式撰写（"老师儿""杠赛来"），TTS 朗读，趣味版。</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 历史复原弹层（智能体④） -->
+<div class="overlay" id="panel-history">
+  <div class="panel">
+    <button class="close" onclick="closePanels()">×</button>
+    <h2>历史场景复原</h2>
+    <div class="sub">智能体④ · AI 复原：清末趵突泉风貌（写实历史照片风）</div>
+    <img class="restore" src="media/baotu-history.png" alt="清末趵突泉复原图">
+    <p class="cap">
+      复原要点：三股水喷涌、石砌方池、汉白玉栏杆、观澜亭式飞檐建筑、垂柳拂水；
+      人物着清末长衫马褂；暖调胶片颗粒质感。配套 5 秒动效视频（泉水涌动、柳枝轻摆）可在此位置播放。
+      复原依据说明随成品交付，存疑处均标注，不编造史实。
+    </p>
+  </div>
+</div>
+
+<!-- 智能对话弹层（智能体①③） -->
+<div class="overlay" id="panel-chat">
+  <div class="panel">
+    <button class="close" onclick="closePanels()">×</button>
+    <h2>智能对话</h2>
+    <div class="sub">智能体①泉城文化问答 / ③路线规划</div>
+    <div class="chatbox">
+      <div class="status">⏳ 平台发布审批中 · 审批通过后按钮生效</div>
+      <p>
+        ① 「小泉」文化问答：讲泉讲湖讲古城，有问必答；<br>
+        ③ 路线规划：按时间/兴趣/体力定制游览路线。<br>
+        审批通过后，下方按钮将直接打开对话页面。
+      </p>
+      <a class="go1" href="https://agentlab.sdu.edu.cn/product/llm/chat/d9gslat4shh25omj5dng" target="_blank" rel="noopener">问「小泉」</a>
+      <a class="go2" href="https://agentlab.sdu.edu.cn/product/llm/chat/d9lujp54shh6e64s5g1g" target="_blank" rel="noopener">规划路线</a>
+    </div>
+  </div>
+</div>
+
+<script>
+  function openPanel(name){
+    document.querySelectorAll('.overlay').forEach(o=>o.classList.remove('show'));
+    document.getElementById('panel-'+name).classList.add('show');
+  }
+  function closePanels(){
+    document.querySelectorAll('.overlay').forEach(o=>o.classList.remove('show'));
+    document.querySelectorAll('audio').forEach(a=>{a.pause();a.currentTime=0;});
+  }
+  document.querySelectorAll('.overlay').forEach(o=>{
+    o.addEventListener('click',e=>{ if(e.target===o) closePanels(); });
+  });
+  document.addEventListener('keydown',e=>{ if(e.key==='Escape') closePanels(); });
+</script>
+
+</body>
+</html>
