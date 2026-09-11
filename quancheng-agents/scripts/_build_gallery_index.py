@@ -6,12 +6,13 @@ from pathlib import Path
 from urllib.parse import quote
 
 ROOT = Path(__file__).parent.parent / "content" / "assets" / "历史复原"
-BASE = "https://raw.githubusercontent.com/Winey0728/JINANwebcode/main/quancheng-agents/content/assets/历史复原"
+BASE = "https://raw.githubusercontent.com/Winey0728/JINANwebcode/main/quancheng-agents/content/assets/%E5%8E%86%E5%8F%B2%E5%A4%8D%E5%8E%9F"
 
 def enc(p: Path) -> str:
-    """相对 ROOT 的路径 → raw URL（正斜杠 + 中文 URL 编码）。"""
+    """相对 ROOT 的路径 → raw URL（正斜杠 + 中文 URL 编码）。
+    ⚠️ 下划线 `_` 转成 `%5F`：避免 Markdown 把 `_` 当斜体语法截断 URL（知识库渲染会 404）。"""
     rel = p.relative_to(ROOT).as_posix()
-    return BASE + "/" + quote(rel, safe="/")
+    return (BASE + "/" + quote(rel, safe="/")).replace("_", "%5F")
 
 def parse_color(stem: str):
     """解析上色图文件名 -> (匹配核心, 场景标签)。

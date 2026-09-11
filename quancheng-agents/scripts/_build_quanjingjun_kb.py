@@ -7,10 +7,11 @@ DOCS = Path(__file__).parent.parent / "docs"
 SRC = DOCS / "图库索引-今夕对比.md"
 DST = DOCS / "泉境君图库知识库.md"
 
-BASE = "https://raw.githubusercontent.com/Winey0728/JINANwebcode/main/quancheng-agents/content/assets/历史复原"
+BASE = "https://raw.githubusercontent.com/Winey0728/JINANwebcode/main/quancheng-agents/content/assets/%E5%8E%86%E5%8F%B2%E5%A4%8D%E5%8E%9F"
 
 def raw(rel: str) -> str:
-    return BASE + "/" + quote(rel, safe="/")
+    """相对 历史复原/ 的路径 → raw URL；下划线转 %5F，避免 Markdown 斜体语法截断链接。"""
+    return (BASE + "/" + quote(rel, safe="/")).replace("_", "%5F")
 
 # AI 复原生成图定稿（龙山 3 张 + 王尽美邓恩铭旧址室内 1 张）
 AI_GEN = [
